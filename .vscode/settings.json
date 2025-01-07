@@ -1,0 +1,12 @@
+{
+    "cSpell.words": [
+        "cordi",
+        "Eclidean",
+        "kmeans",
+        "kmeansmodule",
+        "KMEANSOG"
+    ],
+    "files.associations": {
+        "kmeansog.h": "c"
+    }
+}
