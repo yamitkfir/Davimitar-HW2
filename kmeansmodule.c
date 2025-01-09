@@ -8,7 +8,6 @@ static PyObject* fit(PyObject *self, PyObject *args);
 static PyMethodDef geoMethods[];
 static char* transferred_to_vectors(char* transferred); 
 static char* vectors_to_transferred(char* transferred);
-/* TODO YAMIT declare all other functions */
 
 
 static PyObject* fit(PyObject *self, PyObject *args)
@@ -26,9 +25,7 @@ static PyObject* fit(PyObject *self, PyObject *args)
 
     vector *points = transferred_to_vectors(transferred);
     vector *clusters_initially = transferred_to_vectors(transferred_clusters);
-    // TODO SAAR: update, among others, the "dimension" field bc it's sent to kmeans_general:)
     kmeans_general(clusters_num, iter, epsilon, points, clusters_initially, dimension);
-    /* now */
 
     /* TODO YAMIT return string after packing */
     return Py_BuildValue("s", ); /*  Py_BuildValue(...) returns a PyObject */

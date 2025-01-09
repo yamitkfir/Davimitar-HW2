@@ -69,7 +69,7 @@ def table_to_transferred(original_indices):
     Return String of desired format to send to module and be unpacked there.
     '''
     return
-    # TODO DAVID
+    # TODO DAVID - decide mindfully on a format for strings and convert in a way that can be unpacked later*/
 
 
 def transferred_to_printable(transferred):
@@ -78,7 +78,7 @@ def transferred_to_printable(transferred):
     Return printable string (not here, printed in main)
     '''
     return
-    # TODO DAVID
+    # TODO DAVID - the vectors came back packed. Only get them in printing structure */
 
 
 def main():
@@ -103,7 +103,7 @@ def main():
     choose_move_initial_centroids(data_frame, clusters_num)
     # print(data_frame)
     points_to_send = table_to_transferred(data_frame)
-    clusters_to_send = table_to_transferred(data_frame.iloc[:k])
+    clusters_to_send = table_to_transferred(data_frame.iloc[:clusters_num])
     dimension = data_frame.shape[1]
 
     # TODO YAMIT EXPECTED FOR MODULE: 

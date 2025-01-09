@@ -20,7 +20,7 @@ typedef struct modified_vector {
     struct modified_vector *next;
 } modified_vector;
 
-// Function prototypes
+/* Function prototypes */
 void print_vector(vector *points);
 void print_single_vector(vector *points);
 void print_modified_vector(modified_vector *points);
@@ -28,4 +28,4 @@ void free_vector(vector *points);
 void free_modified_vector(modified_vector *points);
 void free_cord(cord *cord);
 
-#endif // KMEANSOG_H
+#endif /* KMEANSOG_H */

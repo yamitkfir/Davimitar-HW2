@@ -3,6 +3,8 @@
         "cordi",
         "Davimitar",
         "Eclidean",
+        "iloc",
+        "iterrows",
         "kmeans",
         "kmeansmodule",
         "KMEANSOG",

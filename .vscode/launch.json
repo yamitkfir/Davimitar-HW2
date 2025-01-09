@@ -3,7 +3,7 @@
     "configurations": [
         {
             "name": "kmeans_pp",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/kmeans_pp.py",
             "console": "integratedTerminal",
@@ -13,6 +13,33 @@
                 "0.0001",
                 "C:/Users/Yamit/eclipse-workspace/Davimitar-HW2/tests/class_tests/input_1_db_1.txt",
                 "C:/Users/Yamit/eclipse-workspace/Davimitar-HW2/tests/class_tests/input_1_db_2.txt"
+            ]
+        },
+        {
+            "name": "Python: Current File",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "cwd": "${fileDirname}",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "(gdb) Attach",
+            "type": "cppdbg",
+            "request": "attach",
+            /* TODO DAVID SAAR it will work on each of our computers only after updating this line.
+            I'll leave you each a version so we won't have to delete each others'. Its mandatory for debugging. */ 
+            "program": "</c/Users/Yamit/AppData/Local/Microsoft/WindowsApps/python>", /* Yamit's python3 path */
+            // "program": "", /* David's python3 path */
+            // "program": "", /* Saar's python3 path */
+            "processId": "${command:pickProcess}",
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
             ]
         }
     ]
