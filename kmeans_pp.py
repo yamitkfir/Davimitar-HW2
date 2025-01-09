@@ -1,17 +1,25 @@
 import pandas as pd
 import numpy as np
+import sys
 
-def build_point_df_from_files(filepath1, filepath2=None):
+# FILEPATH_1 = "/home/developer/sp/Davimitar-HW2/tests/class_tests/input_1_db_1.txt"
+# FILEPATH_2 = "/home/developer/sp/Davimitar-HW2/tests/class_tests/input_1_db_2.txt"
+SEED = 1234
+SEPARATOR = ","
+GENERAL_ERROR_MSG = "You are stupid"
+DEFAULT_ITER = 300
+
+def build_point_df_from_files(filepath1, filepath2 = None):
     '''
     Receives 1 or 2 txt/csv files with fragments of the input points.
     Connects both files into a single dataframe with the complete points, and returns said dataframe.
     '''
-    points_frag1 = pd.read_csv(filepath1, sep=",", header=None)
+    points_frag1 = pd.read_csv(filepath1, sep = SEPARATOR, header = None)
     frag1_col_num = points_frag1.shape[1]
     if(filepath2 is not None):
-        points_frag2 = pd.read_csv(filepath2, sep=",", header=None)
+        points_frag2 = pd.read_csv(filepath2, sep = SEPARATOR, header = None)
         points_frag2.columns = [col + frag1_col_num for col in points_frag2.columns]
-        points = points_frag1.join(points_frag2, sort=True)
+        points = points_frag1.join(points_frag2, sort = True)
     else:
         return points_frag1
     return points
@@ -23,7 +31,7 @@ def choose_move_initial_centroids(points, k):
     Chosen centroids will be moved inplace to the first k rows of the points dataframe.
     Function will return a list of the original indices of the chosen centroids.
     '''
-    np.random.seed(1234)
+    np.random.seed(SEED)
     points_num = np.shape(points)[0]
     original_indices = []
     rows_to_replace = {}
@@ -55,11 +63,52 @@ def choose_move_initial_centroids(points, k):
     return original_indices
 
 
+def table_to_transferred(original_indices):
+    '''
+    Get Pandas' DataFrame with the chosen centroids in the first k rows.
+    Return String of desired format to send to module and be unpacked there.
+    '''
+    return
+    # TODO DAVID
+
+
+def transferred_to_printable(transferred):
+    '''
+    Get String of desired format sent back from module after packing.
+    Return printable string (not here, printed in main)
+    '''
+    return
+    # TODO DAVID
+
+
 def main():
-    #df = build_point_df_from_files("/home/developer/sp/Davimitar-HW2/tests/class_tests/input_1_db_1.txt", "/home/developer/sp/Davimitar-HW2/tests/class_tests/input_1_db_2.txt")
-    df = build_point_df_from_files("/home/developer/sp/Davimitar-HW2/tests/class_tests/input_1.txt")
-    print(choose_move_initial_centroids(df, 3))
-    print(df)
+    len_argv = len(sys.argv)
+    new_argv = sys.argv
+    if (len_argv not in [5, 6]): # including file's name, so its 4,5
+        print(GENERAL_ERROR_MSG)
+        return
+    
+    # if args.len = 5, pad 2nd arg (iter) with DEFAULT_ITER so it'll be 5 anyway
+    if (len_argv == 5):
+        new_argv.insert(2, DEFAULT_ITER)
+    clusters_num = int(new_argv[1])
+    iter = int(new_argv[2])
+    eps = float(new_argv[3])
+    FILEPATH_1 = new_argv[4]
+    FILEPATH_2 = new_argv[5]
+    # TODO sanity checks including try-except for each of the 5 arguments
+    
+    # df = build_point_df_from_files(FILEPATH_1, FILEPATH_2)
+    data_frame = build_point_df_from_files(FILEPATH_1, FILEPATH_2)
+    choose_move_initial_centroids(data_frame, clusters_num)
+    # print(data_frame)
+    points_to_send = table_to_transferred(data_frame)
+    clusters_to_send = table_to_transferred(data_frame.iloc[:k])
+    dimension = data_frame.shape[1]
+
+    # TODO YAMIT EXPECTED FOR MODULE: 
+    # &clusters_num, &epsilon, &iter, &dimension, &transferred, &transferred_clusters
+
 
 if __name__ == "__main__":
     main()

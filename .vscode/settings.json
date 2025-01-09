@@ -1,10 +1,12 @@
 {
     "cSpell.words": [
         "cordi",
+        "Davimitar",
         "Eclidean",
         "kmeans",
         "kmeansmodule",
-        "KMEANSOG"
+        "KMEANSOG",
+        "YAMIT"
     ],
     "files.associations": {
         "kmeansog.h": "c"
