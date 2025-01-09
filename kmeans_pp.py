@@ -25,16 +25,20 @@ def choose_move_initial_centroids(points, k):
             random_index = np.random.choice(points_num - i, p=probabilities)
             random_index += i # Adjusts the index from the distances dataframe to the original one.
 
-        original_indices.append(random_index)
-        points.iloc[i], points.iloc[random_index] = points.iloc[random_index], points.iloc[i]
-        # Swaps the indices of the swapped points, so the distance calculations will still work as planned.
-        points.rename(index={random_index: i, i: random_index}, inplace=True)
+        original_indices.append(int(random_index))
+        # Replaces the values in the two rows, so that the indexing of the rows will stay consistent (i.e. 1,2,3,...,n-1,n).
+        tmp_coords = [coord for coord in points.iloc[i]]
+        points.iloc[i] = [coord for coord in points.iloc[random_index]]
+        points.iloc[random_index] = tmp_coords
         
     return original_indices
 
 
 def main():
-    # TODO
+    df = (pd.DataFrame)([[1,2,3],[4,5,6],[7,8,9],[10,11,12]])
+    print(df, '\n')
+    print(choose_move_initial_centroids(df, 2), '\n')
+    print(df)
 
 if __name__ == "__main__":
     main()
