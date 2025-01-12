@@ -11,6 +11,7 @@
         "YAMIT"
     ],
     "files.associations": {
-        "kmeansog.h": "c"
+        "kmeansog.h": "c",
+        "math.h": "c"
     }
 }

@@ -1,11 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+/* #include "kmeansOG.h" */
 
 #define EPSILON 0.001
 #define ITER 200
 #define MAX_ITER 1000
-#define INFINITY2 (1.0 / 0.0);
+/* #define INFINITY2 (1.0 / 0.0); */
+#define INFINITY2 INFINITY
 
 typedef struct cord {
     double value;
@@ -27,7 +29,7 @@ typedef struct modified_vector {
 double distant_two_cords(cord *cord1, cord *cord2);
 void assign_cluster(vector *single_point, vector *centroids, modified_vector *newborn_centroids);
 vector* update_clusters(modified_vector *newborn_centroids);
-void kmeans_general(int K, int iter, int epsilon, vector *points, vector *cluster_points, int dimension);
+char* kmeans_general(int K, int iter, double epsilon, vector *points, vector *cluster_points, int dimension);
 void readFile(vector **points, vector **cluster_points, int num_clusters);
 void free_vector(vector *points);
 void free_modified_vector(modified_vector *points);
@@ -38,6 +40,7 @@ void get_points_from_file(vector **points); /* helper function for readFile */
 void initialize_cluster_points(vector* points, vector **cluster_points, int num_clusters); /* helper function for readFile */
 int get_vector_dimensions(vector* vec);
 char check_if_int(char* string);
+static char* vectors_to_transferred(vector* vectors);
 
 /* TEMP for debugging: */
 void print_vector(vector *points);
@@ -150,11 +153,12 @@ vector* update_cluster(modified_vector *newborn_centroids) {
 }
 
 /* Does all logical stuff of PDF's algorithm, including the general loop until exit term. */
-void kmeans_general(int K, int iter, int epsilon, vector *points, vector *cluster_points, int dimension) {
+char* kmeans_general(int K, int iter, double epsilon, vector *points, vector *cluster_points, int dimension) {
     modified_vector *newborn_m_clusters = NULL;
     vector *new_cluster_points = NULL;
     vector *still_points;
     double current_eps = INFINITY2;
+    char* transferred;
 
     while (iter > 0 && current_eps > epsilon) {
         newborn_m_clusters = initiate_k_modified_vectors(K, dimension);
@@ -172,10 +176,18 @@ void kmeans_general(int K, int iter, int epsilon, vector *points, vector *cluste
         /* Free the memory allocated for newborn_m_clusters */
         free_modified_vector(newborn_m_clusters);
     }
-    print_vector(cluster_points);
-    /* TODO now, instead of freeing the final cluster_points - return it and then free it*/
+    /* print_vector(cluster_points); */
+    transferred = vectors_to_transferred(cluster_points);
+    /* TODO DAVID (just so you see this important change) now, instead of freeing the final cluster_points - 
+    save it in string's format and THEN free it*/
     free_vector(points);
     free_vector(cluster_points); /* Free the final cluster points */
+    return transferred;
+}
+
+static char* vectors_to_transferred(vector* transferred){
+    return NULL;
+    /* TODO DAVID - the vectors are ready and need to be packed in order to send to the opposite direction */
 }
 
 void readFile(vector **points, vector **cluster_points, int num_clusters) {

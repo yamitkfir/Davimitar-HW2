@@ -6,7 +6,7 @@ import sys
 # FILEPATH_2 = "/home/developer/sp/Davimitar-HW2/tests/class_tests/input_1_db_2.txt"
 SEED = 1234
 SEPARATOR = ","
-GENERAL_ERROR_MSG = "You are stupid"
+GENERAL_ERROR_MSG = "An Error Has Occurred"
 DEFAULT_ITER = 300
 
 def build_point_df_from_files(filepath1, filepath2 = None):
@@ -84,7 +84,7 @@ def transferred_to_printable(transferred):
 def main():
     len_argv = len(sys.argv)
     new_argv = sys.argv
-    if (len_argv not in [5, 6]): # including file's name, so its 4,5
+    if (len_argv not in [5, 6]): # including file's name, so its actually 4,5 args
         print(GENERAL_ERROR_MSG)
         return
     
@@ -96,18 +96,19 @@ def main():
     eps = float(new_argv[3])
     FILEPATH_1 = new_argv[4]
     FILEPATH_2 = new_argv[5]
-    # TODO sanity checks including try-except for each of the 5 arguments
+    # TODO DAVID sanity checks including try-except for each of the 5 arguments according to PDF's chart
     
     # df = build_point_df_from_files(FILEPATH_1, FILEPATH_2)
     data_frame = build_point_df_from_files(FILEPATH_1, FILEPATH_2)
     choose_move_initial_centroids(data_frame, clusters_num)
-    # print(data_frame)
     points_to_send = table_to_transferred(data_frame)
     clusters_to_send = table_to_transferred(data_frame.iloc[:clusters_num])
     dimension = data_frame.shape[1]
 
     # TODO YAMIT EXPECTED FOR MODULE: 
     # &clusters_num, &epsilon, &iter, &dimension, &transferred, &transferred_clusters
+
+    # Py_BuildValue(...) returns a PyObject
 
 
 if __name__ == "__main__":
