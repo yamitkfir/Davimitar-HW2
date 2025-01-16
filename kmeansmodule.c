@@ -31,8 +31,32 @@ static PyObject* kmeans_capi(PyObject *self, PyObject* args){
 }   
 
 static vector* transferred_to_vectors(char* transferred){
-    return NULL; 
-    /* TODO DAVID - decide mindfully on a format for strings and convert in a way that can be unpacked later*/
+    vector* head = NULL;
+    vector** current_vector = &head;
+    cord** current_cord = NULL;
+    char* curr_line = input;
+    char* buffer;
+    int line_size;
+    int input_size = strlen(input);
+
+    while(strcmp(curr_line, "\n") && (curr_line<(input+input_size))){
+        line_size = strstr(curr_line, "\n") - curr_line;
+        buffer = calloc(line_size+1, 1);
+        memcpy(buffer, curr_line, line_size);
+
+        *(current_vector) = calloc(1, sizeof(vector));
+        (*current_vector)->cords = read_str_to_cord(buffer);
+
+        print_vector(*current_vector);
+
+        current_vector = &((*current_vector)->next);
+        curr_line = curr_line + line_size + 1;
+        
+        free(buffer);
+    }
+
+    return head;
+    /* TODONE DAVID - decide mindfully on a format for strings and convert in a way that can be unpacked later*/
 }
 
 static PyMethodDef kmeansMethods[] = {

@@ -41,6 +41,9 @@ void initialize_cluster_points(vector* points, vector **cluster_points, int num_
 int get_vector_dimensions(vector* vec);
 char check_if_int(char* string);
 static char* vectors_to_transferred(vector* vectors);
+vector* from_string_to_vec(char* input);
+cord* read_str_to_cord(char* data);
+
 
 /* TEMP for debugging: */
 void print_vector(vector *points);
@@ -177,17 +180,39 @@ char* kmeans_general(int K, int iter, double epsilon, vector *points, vector *cl
         free_modified_vector(newborn_m_clusters);
     }
     /* print_vector(cluster_points); */
-    transferred = vectors_to_transferred(cluster_points);
-    /* TODO DAVID (just so you see this important change) now, instead of freeing the final cluster_points - 
+    transferred = vectors_to_transferred(cluster_points, dimension, K);
+    /* TODONE DAVID (just so you see this important change) now, instead of freeing the final cluster_points - 
     save it in string's format and THEN free it*/
+    /* Comment David - Now passes as String in a similar format to the files
+        in hw1*/
     free_vector(points);
     free_vector(cluster_points); /* Free the final cluster points */
     return transferred;
 }
 
-static char* vectors_to_transferred(vector* transferred){
-    return NULL;
-    /* TODO DAVID - the vectors are ready and need to be packed in order to send to the opposite direction */
+static char* vectors_to_transferred(vector* transferred, int dimension, int num_clusters){
+    char* output = calloc((sizeof(double) + 1)*dimension*num_clusters, 1);
+    char* buffer;
+    vector* current_vector = transferred;
+    cord* current_cord;
+    int i = 0;
+
+    while(current_vector){
+        current_cord = current_vector->cords;
+        while(current_cord){
+            buffer = calloc(sizeof(double)+1, 1);
+            sprintf(buffer, "%lf,", current_cord->value);
+            memcpy(output + i, buffer, strlen(buffer));
+            i += strlen(buffer);
+            current_cord = current_cord->next;
+            free(buffer); 
+        }
+        current_vector = current_vector->next;
+        output[i-1] = '\n';
+    }
+
+    return output;
+    /* TODONE DAVID - the vectors are ready and need to be packed in order to send to the opposite direction */
 }
 
 void readFile(vector **points, vector **cluster_points, int num_clusters) {
@@ -431,6 +456,52 @@ char check_if_int(char* string){
     }
     return 1;
 }
+
+vector* from_string_to_vec(char* input){
+    vector* head = NULL;
+    vector** current_vector = &head;
+    cord** current_cord = NULL;
+    char* curr_line = input;
+    char* buffer;
+    int line_size;
+    int input_size = strlen(input);
+
+    while(strcmp(curr_line, "\n") && (curr_line<(input+input_size))){
+        line_size = strstr(curr_line, "\n") - curr_line;
+        buffer = calloc(line_size+1, 1);
+        memcpy(buffer, curr_line, line_size);
+
+        *(current_vector) = calloc(1, sizeof(vector));
+        (*current_vector)->cords = read_str_to_cord(buffer);
+
+        print_vector(*current_vector);
+
+        current_vector = &((*current_vector)->next);
+        curr_line = curr_line + line_size + 1;
+        
+        free(buffer);
+    }
+
+    return head;
+}
+
+cord* read_str_to_cord(char* data){
+    const char* data_toke = ",";
+    cord* head = NULL;
+    cord** current_cord = &head;
+    char* curr_data = strtok(data, data_toke);
+
+    while(curr_data){
+        (*current_cord) = calloc(1, sizeof(cord));
+        (*current_cord)->value = atof(curr_data);
+        curr_data = strtok(NULL, data_toke);
+        current_cord = &((*current_cord)->next);
+    }
+
+    return head;
+}
+
+
 
 // int main(int argc, char *argv[]) {
 //     vector *original_points = NULL;
