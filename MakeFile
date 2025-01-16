@@ -1,0 +1,14 @@
+CC = gcc
+CFLAGS = -Wall -Wextra -Werror
+
+kmeans_pp: kmeansOG.o kmeansmodule.o
+    $(CC) -o kmeans_pp kmeansOG.o kmeansmodule.o $(CFLAGS)
+
+kmeansOG.o: kmeansOG.c
+    $(CC) -c kmeansOG.c $(CFLAGS)
+
+kmeansmodule.o: kmeansmodule.c
+    $(CC) -c kmeansmodule.c $(CFLAGS)
+
+clean:
+    rm -f *.o
