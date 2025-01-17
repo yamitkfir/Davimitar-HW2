@@ -65,19 +65,19 @@ def choose_move_initial_centroids(points, k):
 
 def table_to_transferred(original_indices):
     '''
-    Get Pandas' DataFrame with the chosen centroids in the first k rows.
-    Return String of desired format to send to module and be unpacked there.
+    Input: Pandas DataFrame.
+    Output: List of lists representing the points/vectors in the DataFrame.
     '''
-    return
+    return original_indices.values.tolist()
     # TODO DAVID - decide mindfully on a format for strings and convert in a way that can be unpacked later*/
 
 
 def transferred_to_printable(transferred):
     '''
-    Get String of desired format sent back from module after packing.
-    Return printable string (not here, printed in main)
+    Input is a list of lists representing the clusters sent back from module after packing.
+    Returns printable string (not here, printed in main)
     '''
-    return
+    return '\n'.join([','.join(map(str, sublist)) for sublist in transferred])
     # TODO DAVID - the vectors came back packed. Only get them in printing structure */
 
 
