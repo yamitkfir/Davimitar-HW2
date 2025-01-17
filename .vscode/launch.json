@@ -2,17 +2,41 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "kmeans_pp",
+            "name": "kmeans_pp - input 1",
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/kmeans_pp.py",
             "console": "integratedTerminal",
             "args": [
                 "3",
-                "100",
-                "0.0001",
-                "C:/Users/Yamit/eclipse-workspace/Davimitar-HW2/tests/class_tests/input_1_db_1.txt",
-                "C:/Users/Yamit/eclipse-workspace/Davimitar-HW2/tests/class_tests/input_1_db_2.txt"
+                "333",
+                "0",
+                "C:/Users/Yamit/eclipse-workspace/Davimitar-HW2/tests/class_tests/input_1.txt"
+            ]
+        },
+        {
+            "name": "kmeans_pp - input 2",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/kmeans_pp.py",
+            "console": "integratedTerminal",
+            "args": [
+                "7",
+                "0",
+                "C:/Users/Yamit/eclipse-workspace/Davimitar-HW2/tests/class_tests/input_2.txt"
+            ]
+        },
+        {
+            "name": "kmeans_pp - input 3",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/kmeans_pp.py",
+            "console": "integratedTerminal",
+            "args": [
+                "15",
+                "750",
+                "0",
+                "C:/Users/Yamit/eclipse-workspace/Davimitar-HW2/tests/class_tests/input_3.txt"
             ]
         },
         {
@@ -41,6 +65,45 @@
                     "ignoreFailures": true
                 }
             ]
-        }
+        },
+        {
+            "name": "kmeans_pp - REAL input 1",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/kmeans_pp.py",
+            "console": "integratedTerminal",
+            "args": [
+                "3",
+                "0",
+                "C:/Users/Yamit/eclipse-workspace/Davimitar-HW2/tests/class_tests/input_1_db_1.txt",
+                "C:/Users/Yamit/eclipse-workspace/Davimitar-HW2/tests/class_tests/input_1_db_2.txt"
+            ]
+        },
+        {
+            "name": "kmeans_pp - REAL input 2",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/kmeans_pp.py",
+            "console": "integratedTerminal",
+            "args": [
+                "3",
+                "0",
+                "C:/Users/Yamit/eclipse-workspace/Davimitar-HW2/tests/class_tests/input_2_db_1.txt",
+                "C:/Users/Yamit/eclipse-workspace/Davimitar-HW2/tests/class_tests/input_2_db_2.txt"
+            ]
+        },
+        {
+            "name": "kmeans_pp - REAL input 3",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/kmeans_pp.py",
+            "console": "integratedTerminal",
+            "args": [
+                "3",
+                "0",
+                "C:/Users/Yamit/eclipse-workspace/Davimitar-HW2/tests/class_tests/input_3_db_1.txt",
+                "C:/Users/Yamit/eclipse-workspace/Davimitar-HW2/tests/class_tests/input_3_db_2.txt"
+            ]
+        },
     ]
 }

@@ -30,7 +30,6 @@ static PyObject* kmeans_capi(PyObject *self, PyObject* args){
     output = vector_to_pyList(final_clusters);
     free_vector(final_clusters);
 
-    /* TODO YAMIT return string after packing */
     return Py_BuildValue("O", output); /*  Py_BuildValue(...) returns a PyObject */
 }   
 

@@ -1,13 +1,13 @@
 import pandas as pd
 import numpy as np
 import sys
+import kmeansmodule as ksm
 
-# FILEPATH_1 = "/home/developer/sp/Davimitar-HW2/tests/class_tests/input_1_db_1.txt"
-# FILEPATH_2 = "/home/developer/sp/Davimitar-HW2/tests/class_tests/input_1_db_2.txt"
 SEED = 1234
 SEPARATOR = ","
 GENERAL_ERROR_MSG = "An Error Has Occurred"
 DEFAULT_ITER = 300
+FILE_FORMAT = ".txt", ".csv"
 
 def build_point_df_from_files(filepath1, filepath2 = None):
     '''
@@ -69,7 +69,14 @@ def table_to_transferred(original_indices):
     Output: List of lists representing the points/vectors in the DataFrame.
     '''
     return original_indices.values.tolist()
-    # TODONE DAVID - decide mindfully on a format for strings and convert in a way that can be unpacked later*/
+
+
+def transferred_to_printable_but_formatted_to_4(transferred):
+    '''
+    Input is a list of lists representing the clusters sent back from module after packing.
+    Returns printable string with floats formatted to 4 digits after the dot.
+    '''
+    return '\n'.join([SEPARATOR.join(f"{x:.4f}" for x in sublist) for sublist in transferred])
 
 
 def transferred_to_printable(transferred):
@@ -77,38 +84,53 @@ def transferred_to_printable(transferred):
     Input is a list of lists representing the clusters sent back from module after packing.
     Returns printable string (not here, printed in main)
     '''
-    return '\n'.join([','.join(map(str, sublist)) for sublist in transferred])
-    # TODONE DAVID - the vectors came back packed. Only get them in printing structure */
+    return ''.join([SEPARATOR.join(map(str, sublist)) for sublist in transferred])
+
+
+def print_list_without_brackets(lst):
+    '''
+    Input: List of elements.
+    Output: Prints the list elements separated by commas without brackets.
+    '''
+    print(SEPARATOR.join(map(str, lst)))
 
 
 def main():
     len_argv = len(sys.argv)
     new_argv = sys.argv
-    if (len_argv not in [5, 6]): # including file's name, so its actually 4,5 args
+    if (len_argv not in [4, 5, 6]): # including file's name, so its actually 4,5 args
         print(GENERAL_ERROR_MSG)
         return
     
     # if args.len = 5, pad 2nd arg (iter) with DEFAULT_ITER so it'll be 5 anyway
-    if (len_argv == 5):
-        new_argv.insert(2, DEFAULT_ITER)
+    if (len_argv in [4,5]):
+        # TODO is needed: SUPPORT IN ONLY ONE FILE; add last arg = NULL
+        if not any(fmt in new_argv[-2] for fmt in FILE_FORMAT):
+            new_argv.append(None)
+            if (len(new_argv) == 5): # if there's also no iter arg,
+                new_argv.insert(2, DEFAULT_ITER)
+        else:
+            new_argv.insert(2, DEFAULT_ITER)
+    
     clusters_num = int(new_argv[1])
     iter = int(new_argv[2])
     eps = float(new_argv[3])
     FILEPATH_1 = new_argv[4]
     FILEPATH_2 = new_argv[5]
-    # TODO DAVID sanity checks including try-except for each of the 5 arguments according to PDF's chart
+    # TODO _ sanity checks including try-except for each of the 5 arguments according to PDF's chart
     
-    # df = build_point_df_from_files(FILEPATH_1, FILEPATH_2)
     data_frame = build_point_df_from_files(FILEPATH_1, FILEPATH_2)
-    choose_move_initial_centroids(data_frame, clusters_num)
+
+    initial_centroids_indices = choose_move_initial_centroids(data_frame, clusters_num)
     points_to_send = table_to_transferred(data_frame)
     clusters_to_send = table_to_transferred(data_frame.iloc[:clusters_num])
     dimension = data_frame.shape[1]
-
-    # TODO YAMIT EXPECTED FOR MODULE: 
-    # &clusters_num, &epsilon, &iter, &dimension, &transferred, &transferred_clusters
-
-    # Py_BuildValue(...) returns a PyObject
+    
+    # EXPECTED FOR MODULE: &clusters_num, &epsilon, &iter, &dimension, &transferred, &transferred_clusters
+    our_beloved = ksm.kmeans_capi(clusters_num, eps, iter, dimension, points_to_send, clusters_to_send)
+    print_list_without_brackets(initial_centroids_indices)
+    print(transferred_to_printable_but_formatted_to_4(our_beloved))
+    print('') # they want another empty line(?)
 
 
 if __name__ == "__main__":
