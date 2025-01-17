@@ -6,6 +6,9 @@ David: "We should try working with branches. What's the worst that can happen?"
 <br>
 Yamit: "OK"
 
+David's update: "I did create one branch mistakenly beacuse of push issues. 
+      -As a result, i created a branch dedicated for my py part, which was merged before pushing." 
+
 Our group Google Doc: https://docs.google.com/document/d/12T70t6a4FmX5enU5gJn_O5Ds70XjX0JwbV9M6GuSTPI/edit
 
 _A glance at "temp.c":_ 
