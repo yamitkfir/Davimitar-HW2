@@ -69,7 +69,7 @@ def table_to_transferred(original_indices):
     Output: List of lists representing the points/vectors in the DataFrame.
     '''
     return original_indices.values.tolist()
-    # TODO DAVID - decide mindfully on a format for strings and convert in a way that can be unpacked later*/
+    # TODONE DAVID - decide mindfully on a format for strings and convert in a way that can be unpacked later*/
 
 
 def transferred_to_printable(transferred):
@@ -78,7 +78,7 @@ def transferred_to_printable(transferred):
     Returns printable string (not here, printed in main)
     '''
     return '\n'.join([','.join(map(str, sublist)) for sublist in transferred])
-    # TODO DAVID - the vectors came back packed. Only get them in printing structure */
+    # TODONE DAVID - the vectors came back packed. Only get them in printing structure */
 
 
 def main():
