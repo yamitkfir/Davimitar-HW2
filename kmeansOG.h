@@ -28,6 +28,6 @@ void print_modified_vector(modified_vector *points);
 void free_vector(vector *points);
 void free_modified_vector(modified_vector *points);
 void free_cord(cord *cord);
-char* kmeans_general(int K, int iter, double epsilon, vector *points, vector *cluster_points, int dimension);
+vector* kmeans_general(int K, int iter, double epsilon, vector *points, vector *cluster_points, int dimension);
 
 #endif /* KMEANSOG_H */

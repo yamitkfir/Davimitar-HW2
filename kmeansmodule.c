@@ -5,58 +5,69 @@
 #include <math.h>
 
 /* Function Declarations: */
-static vector* transferred_to_vectors(char* transferred); 
 PyMODINIT_FUNC PyInit_kmeansmodule(void);
 static PyObject* kmeans_capi(PyObject *self, PyObject* args);
+static vector* list_to_vector(PyObject* list);
+static PyObject* vector_to_pyList(vector* vec);
 
 static PyObject* kmeans_capi(PyObject *self, PyObject* args){
     int clusters_num;
     double epsilon;
     int iter = MAX_ITER;
     int dimension;
-    char* transferred_points;
-    char* transferred_clusters;
-    char* output;
+    PyObject* transferred_points;
+    PyObject* transferred_clusters;
+    PyObject* output;
+    vector* final_clusters;
 
-    if(!PyArg_ParseTuple(args, "idiiss", &clusters_num, &epsilon, &iter, &dimension, &transferred_points, &transferred_clusters)){
+    if(!PyArg_ParseTuple(args, "idiiOO", &clusters_num, &epsilon, &iter, &dimension, &transferred_points, &transferred_clusters)){
         return NULL; /* a NULL value is never valid so it's used to signal an error has occurred. */
     }
 
-    vector *points = transferred_to_vectors(transferred_points);
-    vector *clusters_initially = transferred_to_vectors(transferred_clusters);
-    output = kmeans_general(clusters_num, iter, epsilon, points, clusters_initially, dimension);
+    vector *points = list_to_vector(transferred_points);
+    vector *clusters_initially = list_to_vector(transferred_clusters);
+    final_clusters = kmeans_general(clusters_num, iter, epsilon, points, clusters_initially, dimension);
+    output = vector_to_pyList(final_clusters);
+    free_vector(final_clusters);
 
     /* TODO YAMIT return string after packing */
-    return Py_BuildValue("s", output); /*  Py_BuildValue(...) returns a PyObject */
+    return Py_BuildValue("O", output); /*  Py_BuildValue(...) returns a PyObject */
 }   
 
-static vector* transferred_to_vectors(char* transferred){
+static vector* list_to_vector(PyObject* list) {
     vector* head = NULL;
     vector** current_vector = &head;
-    cord** current_cord = NULL;
-    char* curr_line = input;
-    char* buffer;
-    int line_size;
-    int input_size = strlen(input);
+    cord** current_cord;
+    Py_ssize_t num_items = PyList_Size(list);
 
-    while(strcmp(curr_line, "\n") && (curr_line<(input+input_size))){
-        line_size = strstr(curr_line, "\n") - curr_line;
-        buffer = calloc(line_size+1, 1);
-        memcpy(buffer, curr_line, line_size);
-
-        *(current_vector) = calloc(1, sizeof(vector));
-        (*current_vector)->cords = read_str_to_cord(buffer);
-
-        print_vector(*current_vector);
-
-        current_vector = &((*current_vector)->next);
-        curr_line = curr_line + line_size + 1;
+    for (Py_ssize_t i = 0; i < num_items; i++) {
+        PyObject* item = PyList_GetItem(list, i);
+        *current_vector = calloc(1, sizeof(vector));
+        current_cord = &((*current_vector)->cords);
         
-        free(buffer);
-    }
+        for(Py_ssize_t j = 0; j < PyList_Size(item); j++) {
+            *current_cord = calloc(1, sizeof(cord));
+            (*current_cord)->value = PyFloat_AsDouble(PyList_GetItem(item, j));
+            current_cord = &((*current_cord)->next);
+        }
+        current_vector = &((*current_vector)->next);
+   }
+   return head;
+}
 
-    return head;
-    /* TODONE DAVID - decide mindfully on a format for strings and convert in a way that can be unpacked later*/
+static PyObject* vector_to_pyList(vector* vec) {
+    PyObject* list = PyList_New(0);
+    while (vec) {
+        PyObject* inner_list = PyList_New(0);
+        cord* cord = vec->cords;
+        while (cord) {
+            PyList_Append(inner_list, PyFloat_FromDouble(cord->value));
+            cord = cord->next;
+        }
+        PyList_Append(list, inner_list);
+        vec = vec->next;
+    }
+    return list;
 }
 
 static PyMethodDef kmeansMethods[] = {
