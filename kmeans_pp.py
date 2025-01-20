@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import sys
+from math import floor
 import kmeansmodule as ksm
 
 SEED = 1234
@@ -97,6 +98,36 @@ def print_list_without_brackets(lst):
     print(SEPARATOR.join(map(str, lst)))
 
 
+def check_legality(k, N, iter, eps):
+    '''
+    Input: k = Number of wanted centroids. N = number of given points.
+    iter = Number of wanted iterations. eps = Wanted epsilon.
+    Checks the legality of k, iter, eps according to the instructions.
+    Prints error message and terminates if at least one is illegal.
+    '''
+    try: # Check k
+        k = float(k) # If we got here, k is indeed a float.
+        if(floor(k) != k or not 1 < k < N): # k is not an integer, or isn't in the legal range.
+            raise ValueError
+    except:
+        print("Invalid number of clusters!")
+        exit(1)
+    try: # Check iter
+        iter = float(iter)
+        if(floor(iter) != iter or not 1 < iter < 1000):
+            raise ValueError
+    except:
+        print("Invalid maximum iteration!")
+        exit(1)
+    try: # Check epsilon
+        eps = float(eps)
+        if(eps < 0):
+            raise ValueError
+    except:
+        print("Invalid epsilon!")
+        exit(1)
+
+
 def main():
     len_argv = len(sys.argv)
     new_argv = sys.argv
@@ -114,14 +145,15 @@ def main():
         else:
             new_argv.insert(2, DEFAULT_ITER)
     
-    clusters_num = int(new_argv[1])
-    iter = int(new_argv[2])
-    eps = float(new_argv[3])
     FILEPATH_1 = new_argv[4]
     FILEPATH_2 = new_argv[5]
     # TODO _ sanity checks including try-except for each of the 5 arguments according to PDF's chart
-    
+
     data_frame = build_point_df_from_files(FILEPATH_1, FILEPATH_2)
+    check_legality(new_argv[1], data_frame.shape[0], new_argv[2], new_argv[3])
+    clusters_num = int(new_argv[1])
+    iter = int(new_argv[2])
+    eps = float(new_argv[3])
 
     initial_centroids_indices = choose_move_initial_centroids(data_frame, clusters_num)
     points_to_send = table_to_transferred(data_frame)
