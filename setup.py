@@ -6,6 +6,5 @@ setup(name='kmeansmodule',
      description='Python wrapper for custom C extension',
      ext_modules=[module])
 
-# TODO DAVID SAAR install by running in terminal:
+# install by running in terminal:
 # python3 setup.py build_ext --inplace
-# TODO many "build" errors...
