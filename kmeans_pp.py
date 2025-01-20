@@ -6,6 +6,8 @@ import kmeansmodule as ksm
 SEED = 1234
 SEPARATOR = ","
 GENERAL_ERROR_MSG = "An Error Has Occurred"
+K_ERROR_MSG = "Invalid number of clusters!"
+ITER_ERROR_MSG = "Invalid maximum iteration!"
 DEFAULT_ITER = 300
 FILE_FORMAT = ".txt", ".csv"
 
