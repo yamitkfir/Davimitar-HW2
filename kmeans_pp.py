@@ -7,8 +7,6 @@ import kmeansmodule as ksm
 SEED = 1234
 SEPARATOR = ","
 GENERAL_ERROR_MSG = "An Error Has Occurred"
-K_ERROR_MSG = "Invalid number of clusters!"
-ITER_ERROR_MSG = "Invalid maximum iteration!"
 DEFAULT_ITER = 300
 FILE_FORMAT = ".txt", ".csv"
 
@@ -18,9 +16,14 @@ def build_point_df_from_files(filepath1, filepath2 = None):
     Connects both files into a single dataframe with the complete points, and returns said dataframe.
     '''
     points_frag1 = pd.read_csv(filepath1, sep = SEPARATOR, header = None)
+    points_frag1.set_index(0, inplace=True)
+    int_row_indexes = {float(ind) : ind for ind in range(points_frag1.shape[0])}
+    points_frag1.rename(index=int_row_indexes, inplace=True)
     frag1_col_num = points_frag1.shape[1]
     if(filepath2 is not None):
         points_frag2 = pd.read_csv(filepath2, sep = SEPARATOR, header = None)
+        points_frag2.set_index(0, inplace=True)
+        points_frag2.rename(index=int_row_indexes, inplace=True)
         points_frag2.columns = [col + frag1_col_num for col in points_frag2.columns]
         points = points_frag1.join(points_frag2, sort = True)
     else:
