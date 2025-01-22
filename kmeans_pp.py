@@ -34,7 +34,7 @@ def build_point_df_from_files(filepath1, filepath2 = None):
 def choose_move_initial_centroids(points, k):
     '''
     Implementing the kmeans++ initialization.
-    Chosen centroids will be moved inplace to the first k rows of the points dataframe.
+    Chosen centroids will be moved to the first k rows of the points dataframe, and a new dataframe will be returned.
     Function will return a list of the original indices of the chosen centroids.
     '''
     np.random.seed(SEED)
@@ -55,18 +55,20 @@ def choose_move_initial_centroids(points, k):
             # Chooses the next centroid with probability proportional to the distances.
             probabilities = distances / np.sum(distances)
             random_index = np.random.choice(points_num, p=probabilities)
-            #random_index += i # Adjusts the index from the distances dataframe to the original one.
 
         original_indices.append(int(random_index))
-        rows_to_replace[random_index] = i
+        rows_to_replace.append(random_index)
         
-    # Replaces the values in the rows, so that the indexing of the rows will stay consistent (i.e. 1,2,3,...,n-1,n) and the centroids will be in rows 0,...,k-1.
+    # Builds the new dataframe, so that the indexing of the rows will stay consistent (i.e. 1,2,3,...,n-1,n) and the centroids will be in rows 0,...,k-1.
+    new_points = pd.DataFrame()
+    cnt_idx_set = set(rows_to_replace.keys())
     for orig_ind in rows_to_replace:
-        new_ind = rows_to_replace[orig_ind]
-        tmp_coords = [coord for coord in points.iloc[new_ind]]
-        points.iloc[new_ind] = [coord for coord in points.iloc[orig_ind]]
-        points.iloc[orig_ind] = tmp_coords
-    return original_indices
+        new_points.iloc[len(new_points)] = points.iloc[orig_ind]
+    for i in range(points_num):
+        if i not in rows_to_replace:
+            new_points.iloc[len(new_points)] = points.iloc[i]
+    
+    return new_points, original_indices
 
 
 def table_to_transferred(original_indices):
@@ -158,7 +160,7 @@ def main():
     iter = int(new_argv[2])
     eps = float(new_argv[3])
 
-    initial_centroids_indices = choose_move_initial_centroids(data_frame, clusters_num)
+    data_frame, initial_centroids_indices = choose_move_initial_centroids(data_frame, clusters_num)
     points_to_send = table_to_transferred(data_frame)
     clusters_to_send = table_to_transferred(data_frame.iloc[:clusters_num])
     dimension = data_frame.shape[1]
