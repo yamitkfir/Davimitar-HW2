@@ -7,7 +7,6 @@ So, please, use this as much as possible to prevent Taut Nigreret */
 int main() {
     vector *vectors_1 = NULL;
     vector *clusters_initially = NULL;
-    // TODO YAMIT: why doesn't it recognize kmeansOG's funcs?
     print_vector(vectors_1);
     printf("I beg to die");
     return 0;
