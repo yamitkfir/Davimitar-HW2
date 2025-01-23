@@ -31,44 +31,37 @@ def build_point_df_from_files(filepath1, filepath2 = None):
     return points
     
 
-def choose_move_initial_centroids(points, k):
+def choose_initial_centroids(points, k):
     '''
     Implementing the kmeans++ initialization.
-    Chosen centroids will be moved to the first k rows of the points dataframe, and a new dataframe will be returned.
-    Function will return a list of the original indices of the chosen centroids.
+    Function will return a dataframe of the chosen centroids, as well as a list of their original indices.
     '''
     np.random.seed(SEED)
     points_num = np.shape(points)[0]
     original_indices = []
-    rows_to_replace = {}
+    cnt_idx_set = set()
+    centroids = pd.DataFrame(data={i:[float(i)] for i in range(np.shape(points)[1])})
 
     for i in range(k):
         if i == 0:
-            random_index = np.random.choice(points_num) # First centroid is chosen randomly.  
+            random_index = np.random.choice(points_num) # First centroid is chosen randomly. 
+            centroids.loc[0] = [coord for coord in points.iloc[random_index]] 
 
         else:
             # Calculates the distance of each point to the nearest centroid.
             distances = np.zeros(points_num)
             for ind, point in points.iterrows(): # Iterates over all non-chosen points.
-                if (ind not in original_indices):
+                if (ind not in cnt_idx_set):
                     distances[ind] = np.min([np.linalg.norm(points.iloc[cent_ind] - point) for cent_ind in original_indices])
             # Chooses the next centroid with probability proportional to the distances.
             probabilities = distances / np.sum(distances)
             random_index = np.random.choice(points_num, p=probabilities)
+            centroids.loc[len(centroids)] = [coord for coord in points.iloc[random_index]] 
 
-        original_indices.append(int(random_index))
-        rows_to_replace.append(random_index)
-        
-    # Builds the new dataframe, so that the indexing of the rows will stay consistent (i.e. 1,2,3,...,n-1,n) and the centroids will be in rows 0,...,k-1.
-    new_points = pd.DataFrame()
-    cnt_idx_set = set(rows_to_replace.keys())
-    for orig_ind in rows_to_replace:
-        new_points.iloc[len(new_points)] = points.iloc[orig_ind]
-    for i in range(points_num):
-        if i not in rows_to_replace:
-            new_points.iloc[len(new_points)] = points.iloc[i]
+        cnt_idx_set.add(random_index)
+        original_indices.append(random_index)
     
-    return new_points, original_indices
+    return centroids, original_indices
 
 
 def table_to_transferred(original_indices):
@@ -152,18 +145,18 @@ def main():
     
     FILEPATH_1 = new_argv[4]
     FILEPATH_2 = new_argv[5]
-    # TODO _ sanity checks including try-except for each of the 5 arguments according to PDF's chart
 
-    data_frame = build_point_df_from_files(FILEPATH_1, FILEPATH_2)
-    check_legality(new_argv[1], data_frame.shape[0], new_argv[2], new_argv[3])
+    points_df = build_point_df_from_files(FILEPATH_1, FILEPATH_2)
+    check_legality(new_argv[1], points_df.shape[0], new_argv[2], new_argv[3])
     clusters_num = int(new_argv[1])
     iter = int(new_argv[2])
     eps = float(new_argv[3])
 
-    data_frame, initial_centroids_indices = choose_move_initial_centroids(data_frame, clusters_num)
-    points_to_send = table_to_transferred(data_frame)
-    clusters_to_send = table_to_transferred(data_frame.iloc[:clusters_num])
-    dimension = data_frame.shape[1]
+    initial_centroids, initial_centroids_indices = choose_initial_centroids(points_df, clusters_num)
+    points_to_send = table_to_transferred(points_df)
+    clusters_to_send = table_to_transferred(initial_centroids)
+
+    dimension = points_df.shape[1]
     
     # EXPECTED FOR MODULE: &clusters_num, &epsilon, &iter, &dimension, &transferred, &transferred_clusters
     our_beloved = ksm.kmeans_capi(clusters_num, eps, iter, dimension, points_to_send, clusters_to_send)
