@@ -40,19 +40,24 @@ def choose_initial_centroids(points, k):
     Function will return a dataframe of the chosen centroids, as well as a list of their original indices.
     '''
     np.random.seed(SEED)
-    points_num = np.shape(points)[0]
+    points_indices = set()
+    for ind, point in points.iterrows():
+        points_indices.add(ind)
+    points_num = len(points_indices)
     original_indices = []
     cnt_idx_set = set()
     centroids = pd.DataFrame(data={i:[float(i)] for i in range(np.shape(points)[1])})
+    zeros_reseter = {ind:[0] for ind in points_indices}
+    # If there is a problem in distances, try: zeros_reseter = [0 for i in points_indices]
 
     for i in range(k):
         if i == 0:
-            random_index = np.random.choice(points_num) # First centroid is chosen randomly. 
+            random_index = np.random.choice(points_indices) # First centroid is chosen randomly. 
             centroids.loc[0] = [coord for coord in points.iloc[random_index]] 
 
         else:
             # Calculates the distance of each point to the nearest centroid.
-            distances = np.zeros(points_num)
+            distances = pd.DataFrame(data=zeros_reseter)
             for ind, point in points.iterrows(): # Iterates over all non-chosen points.
                 if (ind not in cnt_idx_set):
                     distances[ind] = np.min([np.linalg.norm(points.iloc[cent_ind] - point) for cent_ind in original_indices])
@@ -158,10 +163,12 @@ def main():
     iter = int(new_argv[2])
     eps = float(new_argv[3])
 
-    initial_centroids, initial_centroids_indices = choose_initial_centroids(points_df, clusters_num)
+    initial_centroids_df, initial_centroids_indices = choose_initial_centroids(points_df, clusters_num)
     points_to_send = table_to_transferred(points_df)
-    clusters_to_send = table_to_transferred(initial_centroids)
-
+    clusters_to_send = table_to_transferred(initial_centroids_df)
+    print(points_df, '\n')
+    print(initial_centroids_df, '\n')
+    print(initial_centroids_indices, '\n')
     dimension = points_df.shape[1]
     
     # EXPECTED FOR MODULE: &clusters_num, &epsilon, &iter, &dimension, &transferred, &transferred_clusters
