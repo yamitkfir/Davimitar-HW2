@@ -25,7 +25,7 @@ function testKmeans() {
 	echo "________________"
 }
 
-pushd ${SCRIPT_DIR}/*_*_assignment2/
+pushd ${SCRIPT_DIR}/*_*325712917_326680345_325149383_assignment2/
 echo "------- Setup -------"
 rm -r ./build || echo "No build to remove"
 rm mykmeanssp.cpython*.so || echo "No so to remove"
