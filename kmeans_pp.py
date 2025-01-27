@@ -40,36 +40,35 @@ def choose_initial_centroids(points, k):
     Function will return a dataframe of the chosen centroids, as well as a list of their original indices.
     '''
     np.random.seed(SEED)
-    points_indices = set()
-    for ind, point in points.iterrows():
-        points_indices.add(ind)
-    points_num = len(points_indices)
-    original_indices = []
+    max_idx = np.max([idx for idx, point in points.iterrows()])
+    indices_range = [i for i in range(max_idx+1)] # An array with all numbers between 0 and the maximum index, for cases where the indices aren't consecutive.
+    actual_point_indices = [ind for ind, point in points.iterrows()] # An array with the indices that actually hold points.
+    zeros_reseter = [0.0 for i in range(max_idx+1)]
+    # The returned centroid indices, in array and set form for a little extra efficiency.
+    original_centroid_indices = []
     cnt_idx_set = set()
-    centroids = pd.DataFrame(data={i:[float(i)] for i in range(np.shape(points)[1])})
-    zeros_reseter = {ind:[0] for ind in points_indices}
-    # If there is a problem in distances, try: zeros_reseter = [0 for i in points_indices]
+    centroids = pd.DataFrame(data={i:[float(i)] for i in range(np.shape(points)[1])}) # A dataframe of the centroids to be returned.
 
     for i in range(k):
         if i == 0:
-            random_index = np.random.choice(points_indices) # First centroid is chosen randomly. 
+            random_index = np.random.choice(indices_range) # First centroid is chosen randomly. 
             centroids.loc[0] = [coord for coord in points.iloc[random_index]] 
 
         else:
             # Calculates the distance of each point to the nearest centroid.
-            distances = pd.DataFrame(data=zeros_reseter)
-            for ind, point in points.iterrows(): # Iterates over all non-chosen points.
-                if (ind not in cnt_idx_set):
-                    distances[ind] = np.min([np.linalg.norm(points.iloc[cent_ind] - point) for cent_ind in original_indices])
+            distances = pd.array(zeros_reseter)
+            for ind in actual_point_indices:
+                if (ind not in cnt_idx_set): # Iterates over all non-chosen points and calculates distances from centroids.
+                    distances[ind] = np.min([np.linalg.norm(points.iloc[cent_ind] - points.iloc[ind]) for cent_ind in original_centroid_indices])
             # Chooses the next centroid with probability proportional to the distances.
-            probabilities = distances / np.sum(distances)
-            random_index = np.random.choice(points_num, p=probabilities)
+            probabilities = distances / np.sum(distances, axis=0)
+            random_index = np.random.choice(indices_range, p=probabilities)
             centroids.loc[len(centroids)] = [coord for coord in points.iloc[random_index]] 
 
         cnt_idx_set.add(random_index)
-        original_indices.append(random_index)
+        original_centroid_indices.append(int(random_index))
     
-    return centroids, original_indices
+    return centroids, original_centroid_indices
 
 
 def table_to_transferred(original_indices):
@@ -170,7 +169,6 @@ def main():
     print(initial_centroids_df, '\n')
     print(initial_centroids_indices, '\n')
     dimension = points_df.shape[1]
-    
     # EXPECTED FOR MODULE: &clusters_num, &epsilon, &iter, &dimension, &transferred, &transferred_clusters
     our_beloved = ksm.kmeans_capi(clusters_num, eps, iter, dimension, points_to_send, clusters_to_send)
     print_list_without_brackets(initial_centroids_indices)
