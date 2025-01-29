@@ -40,10 +40,14 @@ def choose_initial_centroids(points, k):
     Function will return a dataframe of the chosen centroids, as well as a list of their original indices.
     '''
     np.random.seed(SEED)
-    max_idx = np.max([idx for idx, point in points.iterrows()])
-    indices_range = [i for i in range(max_idx+1)] # An array with all numbers between 0 and the maximum index, for cases where the indices aren't consecutive.
-    actual_point_indices = [ind for ind, point in points.iterrows()] # An array with the indices that actually hold points.
-    zeros_reseter = [0.0 for i in range(max_idx+1)]
+    serial_num_to_index = {} # For n points, holds the serial numbers 0,...,n-1 and assigns a serial number to every actual point index in "points".
+    i = 0
+    for ind, point in points.iterrows():
+        serial_num_to_index[i] = ind
+        i = i + 1
+    points_num = len(serial_num_to_index)
+    zeros_reseter = [0.0 for i in range(points_num)]
+
     # The returned centroid indices, in array and set form for a little extra efficiency.
     original_centroid_indices = []
     cnt_idx_set = set()
@@ -51,22 +55,24 @@ def choose_initial_centroids(points, k):
 
     for i in range(k):
         if i == 0:
-            random_index = np.random.choice(indices_range) # First centroid is chosen randomly. 
-            centroids.loc[0] = [coord for coord in points.iloc[random_index]] 
+            random_index_sernum = np.random.choice(points_num) # First centroid is chosen randomly. 
+            centroids.loc[0] = [coord for coord in points.iloc[serial_num_to_index[random_index_sernum]]] 
 
         else:
             # Calculates the distance of each point to the nearest centroid.
             distances = pd.array(zeros_reseter)
-            for ind in actual_point_indices:
+            for sernum in serial_num_to_index.keys():
+                ind = serial_num_to_index[sernum]
                 if (ind not in cnt_idx_set): # Iterates over all non-chosen points and calculates distances from centroids.
-                    distances[ind] = np.min([np.linalg.norm(points.iloc[cent_ind] - points.iloc[ind]) for cent_ind in original_centroid_indices])
+                    distances[sernum] = np.min([np.linalg.norm(points.iloc[cent_ind] - points.iloc[ind]) for cent_ind in cnt_idx_set])
             # Chooses the next centroid with probability proportional to the distances.
             probabilities = distances / np.sum(distances, axis=0)
-            random_index = np.random.choice(indices_range, p=probabilities)
-            centroids.loc[len(centroids)] = [coord for coord in points.iloc[random_index]] 
+            random_index_sernum = np.random.choice(points_num, p=probabilities)
+            centroids.loc[len(centroids)] = [coord for coord in points.iloc[serial_num_to_index[random_index_sernum]]] 
 
-        cnt_idx_set.add(random_index)
-        original_centroid_indices.append(int(random_index))
+        chosen_cnt_idx = serial_num_to_index[random_index_sernum]
+        cnt_idx_set.add(chosen_cnt_idx)
+        original_centroid_indices.append(int(chosen_cnt_idx))
     
     return centroids, original_centroid_indices
 
