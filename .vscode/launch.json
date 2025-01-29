@@ -11,7 +11,7 @@
                 "3",
                 "333",
                 "0",
-                "C:/Users/Yamit/eclipse-workspace/Davimitar-HW2/tests/class_tests/input_1.txt"
+                "${workspaceFolder}/tests/class_tests/input_1_db_1.txt"
             ]
         },
         {
@@ -23,7 +23,7 @@
             "args": [
                 "7",
                 "0",
-                "C:/Users/Yamit/eclipse-workspace/Davimitar-HW2/tests/class_tests/input_2.txt"
+                "${workspaceFolder}/tests/class_tests/input_2.txt"
             ]
         },
         {
@@ -36,7 +36,7 @@
                 "15",
                 "750",
                 "0",
-                "C:/Users/Yamit/eclipse-workspace/Davimitar-HW2/tests/class_tests/input_3.txt"
+                "${workspaceFolder}/tests/class_tests/input_3.txt"
             ]
         },
         {
@@ -52,7 +52,8 @@
             "type": "cppdbg",
             "request": "attach",
             /* TODO DAVID SAAR it will work on each of our computers only after updating this line.
-            I'll leave you each a version so we won't have to delete each others'. Its mandatory for debugging. */ 
+            I'll leave you each a version so we won't have to delete each others'. Its mandatory for debugging. */
+             
             "program": "</c/Users/Yamit/AppData/Local/Microsoft/WindowsApps/python>", /* Yamit's python3 path */
             // "program": "", /* David's python3 path */
             // "program": "", /* Saar's python3 path */
@@ -75,8 +76,8 @@
             "args": [
                 "3",
                 "0",
-                "C:/Users/Yamit/eclipse-workspace/Davimitar-HW2/tests/class_tests/input_1_db_1.txt",
-                "C:/Users/Yamit/eclipse-workspace/Davimitar-HW2/tests/class_tests/input_1_db_2.txt"
+                "${workspaceFolder}/tests/class_tests/input_1_db_1.txt",
+                "${workspaceFolder}/tests/class_tests/input_1_db_2.txt"
             ]
         },
         {
@@ -88,8 +89,8 @@
             "args": [
                 "3",
                 "0",
-                "C:/Users/Yamit/eclipse-workspace/Davimitar-HW2/tests/class_tests/input_2_db_1.txt",
-                "C:/Users/Yamit/eclipse-workspace/Davimitar-HW2/tests/class_tests/input_2_db_2.txt"
+                "${workspaceFolder}/tests/class_tests/input_2_db_1.txt",
+                "${workspaceFolder}/tests/class_tests/input_2_db_2.txt"
             ]
         },
         {
@@ -101,8 +102,8 @@
             "args": [
                 "3",
                 "0",
-                "C:/Users/Yamit/eclipse-workspace/Davimitar-HW2/tests/class_tests/input_3_db_1.txt",
-                "C:/Users/Yamit/eclipse-workspace/Davimitar-HW2/tests/class_tests/input_3_db_2.txt"
+                "${workspaceFolder}/tests/class_tests/input_3_db_1.txt",
+                "${workspaceFolder}/tests/class_tests/input_3_db_2.txt"
             ]
         },
     ]

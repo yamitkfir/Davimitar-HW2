@@ -5,10 +5,34 @@ So, please, use this as much as possible to prevent Taut Nigreret */
 #include "kmeansOG.h"
 
 int main() {
-    vector *vectors_1 = NULL;
-    vector *clusters_initially = NULL;
-    print_vector(vectors_1);
-    printf("I beg to die");
+    int n = 10;
+    int **a;
+    int i;
+    a = malloc(n * sizeof(int *));
+    for (i = 0; i < n; i++)
+        a[i] = malloc(n * sizeof(int));
+
+        
+    // Fill the array with some values for demonstration
+    for (i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            a[i][j] = i * n + j;
+        }
+    }
+
+    // Print the array
+    for (i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            printf("%d ", a[i][j]);
+        }
+        printf("\n");
+    }
+
+    // Free the allocated memory
+    for (i = 0; i < n; i++) {
+        free(a[i]);
+    }
+    free(a);
+
     return 0;
-    // run by: "gcc temp.c kmeansOG.c -o temp -lm; .\temp.exe"
 }

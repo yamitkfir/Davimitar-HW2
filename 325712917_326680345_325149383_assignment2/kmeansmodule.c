@@ -6,11 +6,11 @@
 
 /* Function Declarations: */
 PyMODINIT_FUNC PyInit_kmeansmodule(void);
-static PyObject* kmeans_capi(PyObject *self, PyObject* args);
+static PyObject* fit(PyObject *self, PyObject* args);
 static vector* list_to_vector(PyObject* list);
 static PyObject* vector_to_pyList(vector* vec);
 
-static PyObject* kmeans_capi(PyObject *self, PyObject* args){
+static PyObject* fit(PyObject *self, PyObject* args){
     int clusters_num;
     double epsilon;
     int iter = MAX_ITER;
@@ -70,8 +70,8 @@ static PyObject* vector_to_pyList(vector* vec) {
 }
 
 static PyMethodDef kmeansMethods[] = {
-    {"kmeans_capi",             /* the Python method name that will be used */
-    (PyCFunction)kmeans_capi,   /* the C-function that implements the Python function and returns static PyObject*  */
+    {"fit",             /* the Python method name that will be used */
+    (PyCFunction)fit,   /* the C-function that implements the Python function and returns static PyObject*  */
       METH_VARARGS,
       PyDoc_STR("Returns Kmeans of given points, based on instructions.")},
     {NULL, NULL, 0, NULL}
