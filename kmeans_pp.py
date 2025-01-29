@@ -172,7 +172,7 @@ def main():
     clusters_to_send = table_to_transferred(initial_centroids_df)
     dimension = points_df.shape[1]
     # EXPECTED FOR MODULE: &clusters_num, &epsilon, &iter, &dimension, &transferred, &transferred_clusters
-    our_beloved = ksm.kmeans_capi(clusters_num, eps, iter, dimension, points_to_send, clusters_to_send)
+    our_beloved = ksm.fit(clusters_num, eps, iter, dimension, points_to_send, clusters_to_send)
     print_list_without_brackets(initial_centroids_indices)
     print(transferred_to_printable_but_formatted_to_4(our_beloved))
 
