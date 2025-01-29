@@ -55,7 +55,7 @@ def choose_initial_centroids(points, k):
     for i in range(k):
         if i == 0:
             random_index_sernum = np.random.choice(points_num) # First centroid is chosen randomly. 
-            centroids.loc[0] = [coord for coord in points.iloc[serial_num_to_index[random_index_sernum]]] 
+            centroids.loc[0] = [coord for coord in points.loc[serial_num_to_index[random_index_sernum]]] 
 
         else:
             # Calculates the distance of each point to the nearest centroid.
