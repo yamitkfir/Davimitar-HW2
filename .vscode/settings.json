@@ -14,5 +14,6 @@
     "files.associations": {
         "kmeansog.h": "c",
         "math.h": "c"
-    }
+    },
+    "C_Cpp.errorSquiggles": "disabled"
 }

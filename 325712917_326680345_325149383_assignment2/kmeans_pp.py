@@ -40,31 +40,40 @@ def choose_initial_centroids(points, k):
     Function will return a dataframe of the chosen centroids, as well as a list of their original indices.
     '''
     np.random.seed(SEED)
-    points_num = np.shape(points)[0]
-    original_indices = []
-    cnt_idx_set = set()
-    centroids = pd.DataFrame(data={i:[float(i)] for i in range(np.shape(points)[1])})
+    serial_num_to_index = {} # For n points, holds the serial numbers 0,...,n-1 and assigns a serial number to every actual point index in "points".
+    i = 0
+    for ind, point in points.iterrows():
+        serial_num_to_index[i] = int(ind)
+        i = i + 1
+    points_num = len(serial_num_to_index)
+    zeros_reseter = [0.0 for i in range(points_num)]
+
+    centroid_indices = [] # The returned centroid indices.
+    cnt_sernum_set = set() # A set of the returned centroid serial numbers inside serial_num_to_index dict.
+    centroids = pd.DataFrame(data={i:[float(i)] for i in range(np.shape(points)[1])}) # A dataframe of the centroids to be returned.
 
     for i in range(k):
         if i == 0:
-            random_index = np.random.choice(points_num) # First centroid is chosen randomly. 
-            centroids.loc[0] = [coord for coord in points.iloc[random_index]] 
+            random_index_sernum = np.random.choice(points_num) # First centroid is chosen randomly. 
+            centroids.loc[0] = [coord for coord in points.loc[serial_num_to_index[random_index_sernum]]] 
 
         else:
             # Calculates the distance of each point to the nearest centroid.
-            distances = np.zeros(points_num)
-            for ind, point in points.iterrows(): # Iterates over all non-chosen points.
-                if (ind not in cnt_idx_set):
-                    distances[ind] = np.min([np.linalg.norm(points.iloc[cent_ind] - point) for cent_ind in original_indices])
+            distances = pd.array(zeros_reseter)
+            for sernum in serial_num_to_index.keys():
+                ind = serial_num_to_index[sernum]
+                if (sernum not in cnt_sernum_set): # Iterates over all non-chosen points and calculates distances from centroids.
+                    distances[sernum] = np.min([np.linalg.norm(points.loc[cent_ind] - points.loc[ind]) for cent_ind in centroid_indices])
             # Chooses the next centroid with probability proportional to the distances.
-            probabilities = distances / np.sum(distances)
-            random_index = np.random.choice(points_num, p=probabilities)
-            centroids.loc[len(centroids)] = [coord for coord in points.iloc[random_index]] 
+            probabilities = distances / np.sum(distances, axis=0)
+            random_index_sernum = np.random.choice(points_num, p=probabilities)
+            centroids.loc[i] = [coord for coord in points.loc[serial_num_to_index[random_index_sernum]]] 
 
-        cnt_idx_set.add(random_index)
-        original_indices.append(random_index)
+        chosen_cnt_idx = serial_num_to_index[random_index_sernum]
+        cnt_sernum_set.add(chosen_cnt_idx)
+        centroid_indices.append(int(chosen_cnt_idx))
     
-    return centroids, original_indices
+    return centroids, centroid_indices
 
 
 def table_to_transferred(original_indices):
@@ -158,12 +167,10 @@ def main():
     iter = int(new_argv[2])
     eps = float(new_argv[3])
 
-    initial_centroids, initial_centroids_indices = choose_initial_centroids(points_df, clusters_num)
+    initial_centroids_df, initial_centroids_indices = choose_initial_centroids(points_df, clusters_num)
     points_to_send = table_to_transferred(points_df)
-    clusters_to_send = table_to_transferred(initial_centroids)
-
+    clusters_to_send = table_to_transferred(initial_centroids_df)
     dimension = points_df.shape[1]
-    
     # EXPECTED FOR MODULE: &clusters_num, &epsilon, &iter, &dimension, &transferred, &transferred_clusters
     our_beloved = ksm.fit(clusters_num, eps, iter, dimension, points_to_send, clusters_to_send)
     print_list_without_brackets(initial_centroids_indices)
